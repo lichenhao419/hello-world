@@ -214,3 +214,136 @@ namespace SQL.类
         }
     }
 }
+
+子窗体:增加数据
+
+namespace SQL
+{
+    public partial class 增加数据 : Form
+    {
+        public 增加数据()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            String MyConn = "server=localhost.;database=xyz;user=sa;pwd=000000";
+            SqlConnection MyConnection = new SqlConnection(MyConn);
+            string MyInsert = "insert into data(id,x,y,z)values('" + Convert.ToString(textBox1.Text) + "','" + Convert.ToString(textBox2.Text) + "','" + Convert.ToString(textBox3.Text) + "','" + Convert.ToString(textBox4.Text) + "')";
+            SqlCommand MyCommand = new SqlCommand(MyInsert, MyConnection);
+            try//异常处理
+            {
+                MyConnection.Open();
+                MyCommand.ExecuteNonQuery();
+                MyConnection.Close();
+                textBox1.Text = textBox2.Text = textBox3.Text = textBox4.Text ="";
+                MessageBox.Show("成功添加信息！");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+    }
+}
+
+子窗体:删除数据
+
+namespace SQL
+{
+    public partial class 删除数据 : Form
+    {
+        public 删除数据()
+        {
+            InitializeComponent();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("是否删除该学生信息？", "Confirm Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                String MyConn = "server=localhost.;database=xyz;user=sa;pwd=000000";
+                SqlConnection MyConnection = new SqlConnection(MyConn);
+                string MyDelete = "Delete from data where id=" + textBox1.Text;
+                SqlCommand MyCommand = new SqlCommand(MyDelete, MyConnection);
+                try
+                {
+                    MyConnection.Open();
+                    MyCommand.ExecuteNonQuery();
+                    MyConnection.Close();
+                    textBox1.Text = "";
+                    MessageBox.Show("成功删除信息！");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+    }
+}
+
+子窗体:修改数据
+
+namespace SQL
+{
+    public partial class 修改数据 : Form
+    {
+        public 修改数据()
+        {
+            InitializeComponent();
+        }
+        
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("是否修改该id？", "Confirm Message", MessageBoxButtons.YesNo) == DialogResult.Yes)
+            {
+                String connsql = "server=localhost.;database=xyz;user=sa;pwd=000000";
+                SqlConnection MyConnection = new SqlConnection(connsql);
+                string MyUpdate = "Update data set x='" + textBox3.Text + "',y='" + textBox4.Text + "',z='" + textBox5.Text + "'" + " where id=" + "'" + textBox1.Text + "'";
+                SqlCommand MyCommand = new SqlCommand(MyUpdate, MyConnection);
+                try
+                {
+                    MyConnection.Open();
+                    MyCommand.ExecuteNonQuery();
+                    MyConnection.Close();
+                    textBox1.Text = textBox2.Text = textBox3.Text = textBox4.Text = textBox5.Text = "";
+                    MessageBox.Show("成功修改信息！");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            String connsql = "server=localhost.;database=xyz;user=sa;pwd=000000";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection())
+                {
+                    conn.ConnectionString = connsql;
+                    conn.Open(); // 打开数据库连接                
+                    string sql = string.Format("select x,y,z from data where id='{0}'", textBox1.Text);
+                    SqlCommand comm = new SqlCommand(sql, conn);    //command对象                      
+                    SqlDataReader dr = comm.ExecuteReader();      //定义数据读取对象            
+                    if (dr.Read())
+                    {
+                        this.textBox2.Text = textBox1.Text;
+                        this.textBox3.Text = (string)dr.GetValue(0);
+                        this.textBox4.Text = (string)dr.GetValue(1);
+                        this.textBox5.Text = (string)dr.GetValue(2);
+                    }
+                    conn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("错误信息：" + ex.Message, "出现错误");
+            }
+        }
+    }
+}
