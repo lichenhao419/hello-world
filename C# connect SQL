@@ -85,3 +85,95 @@ namespace SQL
         }
     }
 }
+
+添加类sqlDA
+
+namespace SQL.类
+{
+    class sqlDA
+    {
+        SqlConnection _con;
+        SqlCommand _cmd;
+        public sqlDA()
+        {
+            _con = new SqlConnection("server=localhost;database=xyz;user=sa;pwd=000000");
+        }
+        //添加数据的方法
+        public void addData(sqlData data)
+        {
+            
+        }
+        public List<sqlData> select()
+        {
+            List<sqlData> list = new List<sqlData>();
+            //连接数据库，访问数据
+            _cmd = _con.CreateCommand();
+            _con.Open();
+            _cmd.CommandText = "select *from data";
+            SqlDataReader dr = _cmd.ExecuteReader();
+
+            //将数据库数据转换成Sqldata类型，并放入list集合中
+            while (dr.Read())
+            {
+                sqlData data = new sqlData();
+                data.Id = dr["id"].ToString();
+                data.X = dr["x"].ToString();
+                data.Y = dr["y"].ToString();
+                data.Z = dr["z"].ToString();
+                list.Add(data);
+            }
+            _con.Close();
+            return list;
+        }
+        
+        public List<sqlData> select(string uname)
+        {
+            List<sqlData> list = new List<sqlData>();
+            //连接数据库，访问数据
+            _cmd = _con.CreateCommand();
+            _con.Open();
+            _cmd.CommandText = "select *from data where id like '%" + uname + "%'";
+            SqlDataReader dr = _cmd.ExecuteReader();
+
+            //将访问到的数据库数据转换成Sqldata类型，并放入list集合中
+            while (dr.Read())
+            {
+                sqlData data = new sqlData();
+                data.Id = dr["id"].ToString();
+                data.X = dr["x"].ToString();
+                data.Y = dr["y"].ToString();
+                data.Z = dr["z"].ToString();
+                list.Add(data);
+            }
+            _con.Close();
+            return list;
+        }
+        
+        public void update(sqlData data)
+        {
+            //打开连接，拼接命令
+            _con.Open();
+            _cmd = _con.CreateCommand();
+            _cmd.CommandText = "update data set x=@x,y=@y,z=@z where id=@id";
+            
+            _cmd.Parameters.Add("@x", data.X);
+            _cmd.Parameters.Add("@y", data.Y);
+            _cmd.Parameters.Add("@z", data.Z);
+            _cmd.Parameters.Add("@id", data.Id);
+            //执行命令,关闭连接
+            _cmd.ExecuteNonQuery();
+            _con.Close();
+        }
+        public void delete(sqlData data)
+        {
+            //打开连接，拼接命令
+            _con.Open();
+            _cmd = _con.CreateCommand();
+            _cmd.CommandText = "delete from data where id=@id";
+            _cmd.Parameters.Add("@id", data.Id);
+            //执行命令,关闭连接
+            _cmd.ExecuteNonQuery();
+            _con.Close();
+        }
+    }
+}
