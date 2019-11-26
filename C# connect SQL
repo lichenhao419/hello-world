@@ -177,3 +177,40 @@ namespace SQL.类
         }
     }
 }
+
+添加类sqlData
+
+namespace SQL.类
+{
+    public class sqlData
+    {
+        private string _id;
+
+        public string Id
+        {
+            get { return _id; }
+            set { _id = value; }
+        }
+        private string _x;
+
+        public string X
+        {
+            get { return _x; }
+            set { _x = value; }
+        }
+        private string _y;
+
+        public string Y
+        {
+            get { return _y; }
+            set { _y = value; }
+        }
+        private string _z;
+
+        public string Z
+        {
+            get { return _z; }
+            set { _z = value; }
+        }
+    }
+}
